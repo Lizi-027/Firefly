@@ -48,7 +48,7 @@ export const siteConfig: SiteConfig = {
 	subtitle: "正在搭建中",
 
 	// 站点 URL
-	site_url: "https://space.bilibili.com/170199635?spm_id_from=333.1007.0",
+	site_url: " https://b23.tv/k0GSnED",
 
 	// 站点描述
 	description:
@@ -191,7 +191,7 @@ export const siteConfig: SiteConfig = {
 			// 是否显示字数
 			showWords: false,
 			// 是否显示阅读时间
-			showReadingTime:true,
+			showReadingTime:false,
 		},
 		// 底部 PostStats 统计信息显示控制
 		// 如果tagsPosition设置为"bottom"，则stats将不显示
@@ -201,7 +201,7 @@ export const siteConfig: SiteConfig = {
 			// 是否显示字数
 			showWords: true,
 			// 是否显示阅读时间
-			showReadingTime: true,
+			showReadingTime: false,
 		},
 		// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
 		grid: {
@@ -239,11 +239,11 @@ export const siteConfig: SiteConfig = {
 		// 是否显示文章页的分享按钮
 		share: true,
 		// 是否显示上一篇/下一篇文章导航
-		postNavigation: true,
+		postNavigation: false,
 		// 是否显示相关文章推荐
-		relatedPosts: true,
+		relatedPosts: false,
 		// 是否显示随机文章推荐
-		randomPosts: true,
+		randomPosts: false,
 		// OpenGraph图片功能，注意开启后要渲染很长时间，不建议本地调试的时候开启
 		generateOgImages: true,
 		// 沉浸阅读配置：电脑端文章详情页右下角按钮，进入后只留文章卡片+左侧目录

@@ -2,14 +2,15 @@ import type { SponsorConfig } from "../types/sponsorConfig";
 
 export const sponsorConfig: SponsorConfig = {
 	// 页面标题，如果留空则使用 i18n 中的翻译
-	title: "",
+	title: "真的吗？真的吗！是要投喂或者帮助栗子吗！",
+	
 
 	// 页面描述文本，如果留空则使用 i18n 中的翻译
-	description: "",
+	description: "感谢小伙伴的支持哦",
 
 	// 打赏用途说明
 	usage:
-		"您的打赏将用于服务器维护、内容创作和功能开发，帮助栗子持续提供优质内容。",
+		"您的打赏将用于加快网速和功能开发，帮助栗子继续下去。",
 
 	// 是否显示打赏者列表
 	showSponsorsList: true,
@@ -28,7 +29,7 @@ export const sponsorConfig: SponsorConfig = {
 			// 收款码图片路径（需要放在 public 目录下）
 			qrCode: "/assets/images/sponsor/alipay.png",
 			link: "",
-			description: "感谢小伙伴的支持",
+			description: "呜呜~太感谢了",
 			enabled: true,
 		},
 		{
@@ -61,19 +62,19 @@ export const sponsorConfig: SponsorConfig = {
 	sponsors: [
 		// 示例：已实名打赏者
 		{
-			name: "夏叶",
+			name: "user3546629409867796",
 			avatar:
 				"https://weavatar.com/avatar/d252655d40d6874417a720bad0a6c5f77f8f6a1fd2f882f8f338402dc37e4190?s=640",
-			amount: "¥50",
-			date: "2025-10-01",
+			amount: "¥6",
+			date: "2026-10-16",
 		},
 
 		// 示例：匿名打赏者
 		{
 			name: "匿名用户",
 			// avatar: "",
-			amount: "¥20",
-			date: "2025-10-01",
+			amount: "¥6",
+			date: "2026-10-01",
 		},
 	],
 };

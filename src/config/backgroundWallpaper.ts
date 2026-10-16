@@ -79,7 +79,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 主页横幅副标题
 			subtitle: [
 				"恭喜你发现栗子了, 我们一起来玩吧",
-				"From Shattered Sky, I Free Fall",
+				"有注意到其实背景壁纸是栗子吗>v<",
 				"Amidst Silenced Stars, I Deep Sleep",
 				"Upon Lighted Fyrefly, I Soon Gaze",
 				"From Undreamt Night, I Thence Shine",
@@ -105,25 +105,25 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 图标支持 Iconify 格式：fa7-brands:github、fa7-solid:envelope、mdi:rss 等
 			links: [
 				{
-					name: "GitHub",
-					icon: "fa7-brands:github",
-					url: "https://github.com/CuteLeaf/Firefly",
+					name: "哔哩哔哩",
+					icon: "mynaui:tv-solid",
+					url: " https://b23.tv/k0GSnED",
 					showName: true,
 				},
 				{
 					name: "Email",
 					icon: "fa7-solid:envelope",
-					url: "mailto:xiaye@msn.com",
+					url: " https://b23.tv/k0GSnED",
 				},
 				{
 					name: "Sponsor",
 					icon: "material-symbols:favorite",
-					url: "https://blog.cuteleaf.cn/sponsor/",
+					url: " https://b23.tv/k0GSnED",
 				},
 				{
 					name: "RSS",
 					icon: "fa7-solid:rss",
-					url: "/rss/",
+					url: " https://b23.tv/k0GSnED",
 				},
 			],
 		},
