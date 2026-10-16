@@ -25,3 +25,12 @@ seriesOrder: 2
 
 ![EP46](./images/BlogIMG/EP46.jpg)
 如果能找到作者，栗子就贴在EP旁边，找不到也只能算了，毕竟技术力还没那么高。
+
+<iframe width="100%" height="468" src="//player.bilibili.com/player.html?bvid=BV1gmt76GER4&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" &autoplay=0> </iframe>
+
+又一个
+
+然后继续把图片贴在这里。
+
+![EP46](./images/BlogIMG/EP45.jpg)
+如果能找到作者，栗子就贴在EP旁边，找不到也只能算了，毕竟技术力还没那么高。
