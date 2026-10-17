@@ -73,17 +73,16 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 是否启用主页横幅文字
 			enable: true,
 			// 主页横幅主标题
-			title: "27 Lizi!",
+			title: "27号栗子!",
 			// 主页横幅主标题字体大小
 			titleSize: "4.5rem",
 			// 主页横幅副标题
 			subtitle: [
-				"恭喜你发现栗子了, 我们一起来玩吧",
-				"有注意到其实背景壁纸是栗子吗>_<",
+				"恭喜你发现栗子了, 我们一起来玩吧😘",
+				"有注意到其实背景壁纸是栗子吗🥰",
 				"加载速度慢的话可以换一下网络哦",
-				"必要时可以使用魔法",
-				"From Undreamt Night, I Thence Shine",
-				"In Finalized Morrow, I Full Bloom",
+				"必要时可以使用魔法来加速哦😇",
+				"感谢小伙伴的支持，正在努力优化中✨",
 			],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",
