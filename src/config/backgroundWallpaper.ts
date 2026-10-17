@@ -79,9 +79,9 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 主页横幅副标题
 			subtitle: [
 				"恭喜你发现栗子了, 我们一起来玩吧",
-				"有注意到其实背景壁纸是栗子吗>v<",
-				"Amidst Silenced Stars, I Deep Sleep",
-				"Upon Lighted Fyrefly, I Soon Gaze",
+				"有注意到其实背景壁纸是栗子吗>_<",
+				"加载速度慢的话可以换一下网络哦",
+				"必要时可以使用魔法",
 				"From Undreamt Night, I Thence Shine",
 				"In Finalized Morrow, I Full Bloom",
 			],
@@ -97,7 +97,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				// 删除速度（毫秒）
 				deleteSpeed: 50,
 				// 完全显示后的暂停时间（毫秒）
-				pauseTime: 2000,
+				pauseTime: 5000,
 			},
 			// 是否显示标题下方的链接图标
 			linksEnable: true,

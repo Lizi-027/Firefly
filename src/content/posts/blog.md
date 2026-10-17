@@ -7,7 +7,6 @@ category: 测试
 slug: blog
 pinned: true #置顶
 series: "动态测试"
-password: "123456"
 seriesOrder: 2
 ---
 
