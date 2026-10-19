@@ -5,7 +5,7 @@ pinned: true
 description: 呜呜，由于栗子完全不会敲代码，做这个还挺难的。
 tags: [栗子, 小春]
 category: 测试
-image: ./images/cover.png
+image: /images/cover.png
 slug: firefly
 series: "开天辟地新事物"
 seriesOrder: 1
