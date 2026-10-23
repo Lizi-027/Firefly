@@ -44,25 +44,30 @@ const labels = {
         <p class="text-xs text-black/30 dark:text-white/30 text-center m-0">{labels.hint}: {hint}</p>
       )}
 
-      <form id="password-form" class="w-full mt-2 space-y-2">
-        <input
-          id="password-input"
-          name="password"
-          type="password"
-          placeholder={labels.placeholder}
-          autocomplete="off"
-          class="w-full px-3 py-2 rounded-lg text-sm bg-black/5 dark:bg-white/10
-                 border border-black/8 dark:border-white/8
-                 text-black/80 dark:text-white/80 placeholder-black/25 dark:placeholder-white/25
-                 outline-hidden focus:border-(--primary) transition"
-        />
-        <button
-          type="submit"
-          class="w-full py-2 rounded-lg text-sm font-medium bg-(--primary) text-white dark:text-black/70
-                 hover:opacity-85 active:scale-[0.98] transition-all"
-        >
-          {labels.submit}
-        </button>
+      <form id="password-form" class="w-full mt-2">
+        <div class="flex items-stretch gap-2">
+          <input
+            id="password-input"
+            name="password"
+            type="password"
+            placeholder={labels.placeholder}
+            autocomplete="off"
+            class="flex-1 min-w-0 px-3 py-2 rounded-lg text-sm bg-black/5 dark:bg-white/10
+                   border border-black/8 dark:border-white/8
+                   text-black/80 dark:text-white/80 placeholder-black/25 dark:placeholder-white/25
+                   outline-hidden focus:border-(--primary) transition"
+          />
+          <button
+            type="submit"
+            aria-label={labels.submit}
+            title={labels.submit}
+            class="shrink-0 w-10 inline-flex items-center justify-center rounded-lg
+                   bg-(--primary) text-white dark:text-black/70
+                   hover:opacity-85 active:scale-[0.98] transition-all"
+          >
+            <Icon name="material-symbols:arrow-forward" class="text-lg" />
+          </button>
+        </div>
       </form>
 
       <p id="password-error" class="text-xs text-red-500 dark:text-red-400 m-0 hidden">{labels.error}</p>
