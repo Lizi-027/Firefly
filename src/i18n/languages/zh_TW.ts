@@ -519,6 +519,8 @@ export const zh_TW: Translation = {
 	[Key.passwordPlaceholder]: "請輸入密碼",
 	[Key.passwordSubmit]: "解鎖",
 	[Key.passwordError]: "密碼錯誤，請重試。",
+	[Key.passwordInsecureContext]:
+		"目前環境無法解密內容：請確認是透過 https:// 開啟的，或改用系統自帶瀏覽器再試。",
 	[Key.passwordProtectedRss]: "本文已加密保護，請訪問網站查看。",
 
 	// 背景影片播放器

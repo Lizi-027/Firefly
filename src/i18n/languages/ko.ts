@@ -526,6 +526,8 @@ export const ko: Translation = {
 	[Key.passwordPlaceholder]: "비밀번호 입력",
 	[Key.passwordSubmit]: "잠금 해제",
 	[Key.passwordError]: "비밀번호가 올바르지 않습니다. 다시 시도해 주세요.",
+	[Key.passwordInsecureContext]:
+		"이 환경에서는 내용을 복호화할 수 없습니다. https:// 로 열었는지 확인하거나 다른 브라우저에서 시도해 주세요.",
 	[Key.passwordProtectedRss]:
 		"이 글은 암호화되어 있습니다. 웹사이트에서 확인해 주세요.",
 

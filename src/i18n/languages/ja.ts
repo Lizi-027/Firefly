@@ -526,6 +526,8 @@ export const ja: Translation = {
 	[Key.passwordPlaceholder]: "パスワードを入力",
 	[Key.passwordSubmit]: "ロック解除",
 	[Key.passwordError]: "パスワードが間違っています。もう一度お試しください。",
+	[Key.passwordInsecureContext]:
+		"この環境では内容を復号できません。https:// で開いているか確認するか、別のブラウザでお試しください。",
 	[Key.passwordProtectedRss]:
 		"この記事は暗号化されています。ウェブサイトにアクセスしてご覧ください。",
 

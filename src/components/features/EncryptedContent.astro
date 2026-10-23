@@ -22,6 +22,7 @@ const labels = {
 	placeholder: i18n(I18nKey.passwordPlaceholder),
 	submit: i18n(I18nKey.passwordSubmit),
 	error: i18n(I18nKey.passwordError),
+	insecure: i18n(I18nKey.passwordInsecureContext),
 };
 ---
 
@@ -29,6 +30,7 @@ const labels = {
   id="encrypted-container"
   data-encrypted={encryptedData}
   data-slug={slug}
+  data-insecure={labels.insecure}
 >
   <!-- Lock UI -->
   <div id="password-ui" class="flex justify-center py-16 px-4">
@@ -90,6 +92,16 @@ const labels = {
   var input = document.getElementById('password-input');
   var errorEl = document.getElementById('password-error');
   var contentEl = document.getElementById('decrypted-content');
+
+  // 非 https（或内核不提供 WebCrypto）时浏览器无法解密，直接给出可操作提示，
+  // 避免把环境问题误报成“密码错误”
+  var insecureText = container.getAttribute('data-insecure') || '';
+  if (!(window.isSecureContext && window.crypto && window.crypto.subtle)) {
+    if (insecureText) errorEl.textContent = insecureText;
+    errorEl.classList.remove('hidden');
+    form.classList.add('hidden');
+    return;
+  }
 
   function showContent(html) {
     contentEl.innerHTML = html;
@@ -238,3 +250,20 @@ const labels = {
   }
 })();
 </script>
+
+<style>
+  /*
+    主题的 --primary 使用 oklch() 定义。部分手机浏览器内核不支持该颜色函数时，
+    按钮会变成“透明背景 + 白字”而完全看不见，这里提供纯十六进制兜底色；
+    支持 oklch 的浏览器仍然使用主题色。
+  */
+  #password-form button[type="submit"] {
+    background-color: #6366f1;
+  }
+
+  @supports (color: oklch(0.7 0.14 250)) {
+    #password-form button[type="submit"] {
+      background-color: var(--primary);
+    }
+  }
+</style>

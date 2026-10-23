@@ -530,6 +530,8 @@ export const ru: Translation = {
 	[Key.passwordPlaceholder]: "Введите пароль",
 	[Key.passwordSubmit]: "Разблокировать",
 	[Key.passwordError]: "Неверный пароль, попробуйте снова.",
+	[Key.passwordInsecureContext]:
+		"Браузер не может расшифровать содержимое. Проверьте, что страница открыта по https://, или попробуйте другой браузер.",
 	[Key.passwordProtectedRss]:
 		"Эта статья зашифрована. Пожалуйста, посетите сайт для просмотра.",
 

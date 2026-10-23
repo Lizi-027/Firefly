@@ -511,6 +511,7 @@ enum I18nKey {
 	passwordPlaceholder = "passwordPlaceholder",
 	passwordSubmit = "passwordSubmit",
 	passwordError = "passwordError",
+	passwordInsecureContext = "passwordInsecureContext",
 	passwordProtectedRss = "passwordProtectedRss",
 
 	// 背景视频播放器

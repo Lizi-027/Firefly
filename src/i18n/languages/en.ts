@@ -529,6 +529,8 @@ export const en: Translation = {
 	[Key.passwordPlaceholder]: "Enter password",
 	[Key.passwordSubmit]: "Unlock",
 	[Key.passwordError]: "Incorrect password, please try again.",
+	[Key.passwordInsecureContext]:
+		"This browser cannot decrypt the content here. Please make sure the page is opened via https://, or try another browser.",
 	[Key.passwordProtectedRss]:
 		"This article is encrypted. Please visit the website to view it.",
 
