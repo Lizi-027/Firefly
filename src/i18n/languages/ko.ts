@@ -512,6 +512,11 @@ export const ko: Translation = {
 	[Key.galleryBackToAlbums]: "앨범으로 돌아가기",
 	[Key.galleryEnterAlbum]: "앨범 보기",
 	[Key.searchAlbums]: "앨범 검색...",
+	[Key.searchPhotos]: "이미지 이름 검색...",
+	[Key.searchInPost]: "이 글에서 검색...",
+	[Key.searchInPostButton]: "검색",
+	[Key.searchInPostNoResults]: "일치하는 내용이 없습니다",
+	[Key.searchInPostDotLabel]: "{index}번째 결과로 이동",
 
 	// Password Protection
 	[Key.passwordProtected]: "비밀번호로 보호됨",

@@ -3,14 +3,12 @@ import type { SponsorConfig } from "../types/sponsorConfig";
 export const sponsorConfig: SponsorConfig = {
 	// 页面标题，如果留空则使用 i18n 中的翻译
 	title: "真的吗？真的吗！是要投喂或者帮助栗子吗！",
-	
 
 	// 页面描述文本，如果留空则使用 i18n 中的翻译
 	description: "感谢小伙伴的支持哦",
 
 	// 打赏用途说明
-	usage:
-		"您的打赏将用于加快网速和功能开发，帮助栗子继续下去。",
+	usage: "您的打赏将用于加快网速和功能开发，帮助栗子继续下去。",
 
 	// 是否显示打赏者列表
 	showSponsorsList: true,

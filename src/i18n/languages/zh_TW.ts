@@ -506,6 +506,11 @@ export const zh_TW: Translation = {
 	[Key.galleryBackToAlbums]: "返回相簿列表",
 	[Key.galleryEnterAlbum]: "進入相簿",
 	[Key.searchAlbums]: "搜尋相簿...",
+	[Key.searchPhotos]: "搜尋圖片名稱...",
+	[Key.searchInPost]: "搜尋本文內容...",
+	[Key.searchInPostButton]: "搜尋",
+	[Key.searchInPostNoResults]: "找不到相關內容",
+	[Key.searchInPostDotLabel]: "跳轉到第 {index} 個結果",
 
 	// 密碼保護
 	[Key.passwordProtected]: "密碼保護",

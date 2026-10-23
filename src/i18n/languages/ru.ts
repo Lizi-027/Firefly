@@ -516,6 +516,11 @@ export const ru: Translation = {
 	[Key.galleryBackToAlbums]: "Вернуться к альбомам",
 	[Key.galleryEnterAlbum]: "Открыть альбом",
 	[Key.searchAlbums]: "Поиск альбомов...",
+	[Key.searchPhotos]: "Поиск по имени фото...",
+	[Key.searchInPost]: "Поиск по статье...",
+	[Key.searchInPostButton]: "Найти",
+	[Key.searchInPostNoResults]: "Совпадений не найдено",
+	[Key.searchInPostDotLabel]: "Перейти к результату {index}",
 
 	// Защита паролем
 	[Key.passwordProtected]: "Защищено паролем",

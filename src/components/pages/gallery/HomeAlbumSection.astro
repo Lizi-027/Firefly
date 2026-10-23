@@ -1,0 +1,78 @@
+---
+import { Icon } from "astro-icon/components";
+import AlbumCard from "@/components/pages/gallery/AlbumCard.astro";
+import { galleryConfig, siteConfig } from "@/config";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+import "@/styles/pages/card-grid.css";
+import { getAlbumCover, scanAlbumPhotos } from "@/utils/gallery-utils";
+import { url } from "@/utils/url-utils";
+
+// 首页置顶相册区块：仅展示 galleryConfig 中标记 pinned 的相册
+const homeSection = galleryConfig.homeSection;
+const enabled = (homeSection?.enable ?? true) && siteConfig.pages.gallery;
+const limit = homeSection?.limit ?? 3;
+
+const pinnedAlbums = galleryConfig.albums
+	.map((album, index) => ({ album, index }))
+	.filter(({ album }) => album.pinned)
+	.sort((a, b) => {
+		const ao = a.album.pinnedOrder ?? a.index;
+		const bo = b.album.pinnedOrder ?? b.index;
+		return ao - bo;
+	})
+	.slice(0, limit)
+	.map(({ album }) => album);
+
+const albums = pinnedAlbums.map((album) => {
+	const photos = scanAlbumPhotos(album.id);
+	return {
+		...album,
+		cover: getAlbumCover(album, photos),
+		photoCount: photos.length,
+	};
+});
+
+const show = enabled && albums.length > 0;
+const title = homeSection?.title || i18n(I18nKey.gallery);
+const galleryUrl = url("/gallery/");
+---
+
+{
+	show && (
+		<section class="home-album-section mb-4">
+			<a
+				href={galleryUrl}
+				class="group flex items-center gap-2 mb-3 px-1 w-fit"
+				aria-label={title}
+			>
+				<Icon
+					name="material-symbols:photo-library"
+					class="text-xl text-(--primary)"
+				/>
+				<h2 class="text-lg font-bold text-black/90 dark:text-white/90 group-hover:text-(--primary) transition-colors">
+					{title}
+				</h2>
+				<Icon
+					name="material-symbols:chevron-right-rounded"
+					class="text-xl text-neutral-400 dark:text-neutral-500 group-hover:text-(--primary) group-hover:translate-x-0.5 transition-all"
+				/>
+			</a>
+			<div class="card-grid" style="--card-grid-min-width: 320px">
+				{albums.map((album) => (
+					<AlbumCard
+						id={album.id}
+						name={album.name}
+						cover={album.cover}
+						description={album.description}
+						date={album.date}
+						location={album.location}
+						tags={album.tags}
+						photoCount={album.photoCount}
+						encrypted={!!album.password}
+					/>
+				))}
+			</div>
+		</section>
+	)
+}

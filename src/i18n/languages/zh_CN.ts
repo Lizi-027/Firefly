@@ -5,8 +5,8 @@ export const zh_CN: Translation = {
 	[Key.home]: "主页",
 	[Key.about]: "关于我",
 	[Key.archive]: "归档",
-	[Key.search]: "搜索",
-	[Key.searchNoResults]: "找不到相关结果。",
+	[Key.search]: "哦？是想找什么吗😋",
+	[Key.searchNoResults]: "好像没有这个诶。",
 	[Key.searchTypeSomething]: "请输入搜索关键词。",
 	[Key.searchLoading]: "正在搜索...",
 	[Key.searchSummary]: "摘要",
@@ -504,6 +504,11 @@ export const zh_CN: Translation = {
 	[Key.galleryBackToAlbums]: "返回相册列表",
 	[Key.galleryEnterAlbum]: "进入相册",
 	[Key.searchAlbums]: "搜索相簿...",
+	[Key.searchPhotos]: "搜索EP数可查找图片哦",
+	[Key.searchInPost]: "搜索本文内容...",
+	[Key.searchInPostButton]: "搜索",
+	[Key.searchInPostNoResults]: "未找到相关内容",
+	[Key.searchInPostDotLabel]: "跳转到第 {index} 个结果",
 
 	// 密码保护
 	[Key.passwordProtected]: "密码保护",

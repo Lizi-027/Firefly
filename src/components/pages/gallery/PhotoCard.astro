@@ -9,11 +9,28 @@ interface Props {
 
 const { src, albumId, alt = "" } = Astro.props;
 
+// 从图片地址中提取文件名，用于相册内按图片名搜索
+function getFileName(path: string): string {
+	const clean = path.split("?")[0].split("#")[0];
+	const base = clean.substring(clean.lastIndexOf("/") + 1);
+	try {
+		return decodeURIComponent(base);
+	} catch {
+		return base;
+	}
+}
+
+const fileName = getFileName(src);
+
 // LQIP 渐变占位
 const lqipProps = getLqipProps(src, undefined, true);
 ---
 
-<div class="gallery-photo-card break-inside-avoid mb-3">
+<div
+  class="gallery-photo-card break-inside-avoid mb-3"
+  data-name={fileName}
+  data-gallery-group={`gallery-${albumId}`}
+>
   <div
     data-fancybox={`gallery-${albumId}`}
     data-src={src}

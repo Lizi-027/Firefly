@@ -1,0 +1,664 @@
+---
+import { Icon } from "astro-icon/components";
+import { postSearchConfig } from "@/config";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+
+const config = postSearchConfig;
+const placeholder = i18n(I18nKey.searchInPost);
+---
+
+{
+	config.enable !== false && (
+		<post-search
+			class="block mb-5"
+			data-config={JSON.stringify(config)}
+			data-no-results={i18n(I18nKey.searchInPostNoResults)}
+			data-dot-label={i18n(I18nKey.searchInPostDotLabel)}
+		>
+			{/* 搜索框 */}
+			<div class="flex items-stretch gap-2">
+				<div class="relative flex-1">
+					<Icon
+						name="material-symbols:search"
+						class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500 text-lg pointer-events-none"
+					/>
+					<input
+						type="text"
+						data-input
+						placeholder={placeholder}
+						aria-label={placeholder}
+						class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-(--line-divider) bg-transparent text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:border-(--primary) focus:ring-1 focus:ring-(--primary) outline-none transition-all duration-200 text-sm"
+					/>
+				</div>
+				<button
+					type="button"
+					data-submit
+					class="inline-flex items-center gap-1.5 px-4 rounded-xl bg-(--primary) text-white text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
+				>
+					<Icon name="material-symbols:search" class="text-lg" />
+					<span class="hidden sm:inline">
+						{i18n(I18nKey.searchInPostButton)}
+					</span>
+				</button>
+			</div>
+
+			{/* 无结果提示 */}
+			<p
+				data-hint
+				hidden
+				class="mt-2 text-xs text-neutral-500 dark:text-neutral-400"
+				role="status"
+				aria-live="polite"
+			/>
+
+			{/* 右侧位置进度条（仅搜索到结果后显示，脚本会挂载到 body） */}
+			<div data-bar class="post-search-bar" hidden />
+		</post-search>
+	)
+}
+
+<style is:global>
+	.post-search-bar {
+		position: fixed;
+		z-index: 30;
+		border-radius: 9999px;
+		pointer-events: none;
+		transform: translateY(-50%);
+	}
+
+	.post-search-dot {
+		position: absolute;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		padding: 6px;
+		border: 0;
+		background: transparent;
+		line-height: 0;
+		cursor: pointer;
+		pointer-events: auto;
+	}
+
+	.post-search-dot > span {
+		display: block;
+		width: var(--post-search-dot-size, 10px);
+		height: var(--post-search-dot-size, 10px);
+		border-radius: 9999px;
+		background: var(--post-search-dot-color, rgba(107, 114, 128, 0.9));
+		transition:
+			background-color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.post-search-dot:hover > span {
+		transform: scale(1.25);
+	}
+
+	.post-search-dot.is-active > span {
+		background: var(--post-search-active-color, var(--primary));
+		transform: scale(1.35);
+	}
+
+	.post-search-hit {
+		border-radius: 6px;
+		animation: post-search-highlight 1.8s ease-out;
+	}
+
+	@keyframes post-search-highlight {
+		0%,
+		30% {
+			background-color: rgba(255, 193, 7, 0.22);
+			background-color: color-mix(in srgb, var(--primary) 22%, transparent);
+		}
+		100% {
+			background-color: transparent;
+		}
+	}
+</style>
+
+<script>
+	interface PostSearchConfigData {
+		trigger?: "enter" | "input";
+		highlight?: boolean;
+		progressBar?: {
+			enable?: boolean;
+			length?: string;
+			width?: number;
+			offset?: number;
+			top?: string;
+			barColor?: string;
+			dotSize?: number;
+			dotColor?: string;
+			activeDotColor?: string;
+			bucketSize?: number;
+			hideOnMobile?: boolean;
+		};
+	}
+
+	interface MatchResult {
+		target: Element;
+		top: number;
+	}
+
+	interface MatchGroup {
+		firstIndex: number;
+		ratio: number;
+	}
+
+	class PostSearch extends HTMLElement {
+		private input: HTMLInputElement | null = null;
+		private submit: HTMLButtonElement | null = null;
+		private hint: HTMLElement | null = null;
+		private bar: HTMLElement | null = null;
+		private article: HTMLElement | null = null;
+
+		private config: PostSearchConfigData = {};
+		private noResultsText = "";
+		private dotLabel = "";
+
+		private results: MatchResult[] = [];
+		private groups: MatchGroup[] = [];
+		private currentIndex = -1;
+		private lastQuery = "";
+
+		private resizeObserver: ResizeObserver | null = null;
+		private inputTimer = 0;
+		private rebuildTimer = 0;
+		private highlightTimer = 0;
+		private settleTimers: number[] = [];
+		private userInterrupted = false;
+		private bound = false;
+
+		connectedCallback() {
+			if (this.bound) return;
+			this.bound = true;
+
+			try {
+				this.config = JSON.parse(
+					this.dataset.config || "{}",
+				) as PostSearchConfigData;
+			} catch {
+				this.config = {};
+			}
+
+			this.noResultsText = this.dataset.noResults || "";
+			this.dotLabel = this.dataset.dotLabel || "";
+
+			this.input = this.querySelector<HTMLInputElement>("[data-input]");
+			this.submit = this.querySelector<HTMLButtonElement>("[data-submit]");
+			this.hint = this.querySelector<HTMLElement>("[data-hint]");
+			this.bar = this.querySelector<HTMLElement>("[data-bar]");
+
+			// 挂载到 body，避免父级 transform / overflow 影响 fixed 定位
+			if (this.bar) {
+				document.body.appendChild(this.bar);
+			}
+
+			this.input?.addEventListener("keydown", this.onKeyDown);
+			this.submit?.addEventListener("click", this.onSubmit);
+
+			if (this.config.trigger === "input") {
+				this.input?.addEventListener("input", this.onInput);
+			}
+
+			window.addEventListener("resize", this.onWindowResize);
+			window.addEventListener("wheel", this.onUserInterrupt, {
+				passive: true,
+			});
+			window.addEventListener("touchstart", this.onUserInterrupt, {
+				passive: true,
+			});
+		}
+
+		disconnectedCallback() {
+			this.input?.removeEventListener("keydown", this.onKeyDown);
+			this.submit?.removeEventListener("click", this.onSubmit);
+			this.input?.removeEventListener("input", this.onInput);
+			window.removeEventListener("resize", this.onWindowResize);
+			window.removeEventListener("wheel", this.onUserInterrupt);
+			window.removeEventListener("touchstart", this.onUserInterrupt);
+
+			this.resizeObserver?.disconnect();
+			this.resizeObserver = null;
+
+			window.clearTimeout(this.inputTimer);
+			window.clearTimeout(this.rebuildTimer);
+			window.clearTimeout(this.highlightTimer);
+			this.clearSettleTimers();
+
+			this.clearHighlight();
+			this.bar?.remove();
+			this.bar = null;
+			this.bound = false;
+		}
+
+		private onKeyDown = (event: KeyboardEvent) => {
+			if (event.key !== "Enter" || event.isComposing) return;
+			event.preventDefault();
+
+			if (this.needsNewSearch()) {
+				this.runSearch();
+				return;
+			}
+
+			this.goTo(event.shiftKey ? this.currentIndex - 1 : this.currentIndex + 1);
+		};
+
+		private onSubmit = () => {
+			if (this.needsNewSearch()) {
+				this.runSearch();
+				return;
+			}
+			this.goTo(this.currentIndex + 1);
+		};
+
+		private onInput = () => {
+			window.clearTimeout(this.inputTimer);
+			this.inputTimer = window.setTimeout(() => this.runSearch(), 300);
+		};
+
+		private onWindowResize = () => {
+			if (!this.results.length) return;
+			window.clearTimeout(this.rebuildTimer);
+			this.rebuildTimer = window.setTimeout(
+				() => this.refreshGeometry(),
+				150,
+			);
+		};
+
+		private onUserInterrupt = () => {
+			this.userInterrupted = true;
+		};
+
+		private needsNewSearch(): boolean {
+			return (
+				(this.input?.value || "").trim().toLowerCase() !== this.lastQuery
+			);
+		}
+
+		private findArticle(): HTMLElement | null {
+			return (
+				document.querySelector<HTMLElement>(
+					"#post-container .custom-md",
+				) || document.querySelector<HTMLElement>(".custom-md")
+			);
+		}
+
+		private runSearch() {
+			const query = (this.input?.value || "").trim();
+			const normalized = query.toLowerCase();
+
+			this.clearHighlight();
+			this.currentIndex = -1;
+			this.results = [];
+			this.groups = [];
+			this.lastQuery = normalized;
+
+			if (!query) {
+				this.hideHint();
+				this.hideBar();
+				return;
+			}
+
+			const article = this.findArticle();
+			if (!article) {
+				this.showNoResults();
+				return;
+			}
+
+			this.article = article;
+			this.observeArticle(article);
+
+			const matches = this.collectMatches(article, normalized);
+			if (!matches.length) {
+				this.showNoResults();
+				return;
+			}
+
+			this.results = matches;
+			this.hideHint();
+			this.buildGroups();
+			this.goTo(0);
+		}
+
+		private collectMatches(
+			article: HTMLElement,
+			query: string,
+		): MatchResult[] {
+			const articleTop =
+				article.getBoundingClientRect().top + window.scrollY;
+			const needles = this.buildNeedles(query);
+			const walker = document.createTreeWalker(
+				article,
+				NodeFilter.SHOW_TEXT,
+				{
+					acceptNode: (node: Node) => {
+						const value = node.nodeValue;
+						if (!value || !value.trim()) {
+							return NodeFilter.FILTER_REJECT;
+						}
+						const parent = node.parentElement;
+						if (!parent) return NodeFilter.FILTER_REJECT;
+						if (
+							parent.closest(
+								"script, style, noscript, textarea, .anchor",
+							)
+						) {
+							return NodeFilter.FILTER_REJECT;
+						}
+						return NodeFilter.FILTER_ACCEPT;
+					},
+				},
+			);
+
+			const results: MatchResult[] = [];
+			const seen = new Set<Element>();
+			let node = walker.nextNode();
+
+			while (node) {
+				const content = (node.nodeValue || "").toLowerCase();
+				if (needles.some((needle) => content.includes(needle))) {
+					const target = this.resolveTarget(node);
+					if (target && !seen.has(target)) {
+						seen.add(target);
+						results.push({
+							target,
+							top:
+								target.getBoundingClientRect().top +
+								window.scrollY -
+								articleTop,
+						});
+					}
+				}
+				node = walker.nextNode();
+			}
+
+			return results;
+		}
+
+		private buildNeedles(query: string): string[] {
+			const needles = new Set<string>([query]);
+			// 允许输入带扩展名的图片名，如 EP46.jpg
+			const stripped = query
+				.replace(/\.(jpe?g|png|webp|avif|gif)$/i, "")
+				.trim();
+			if (stripped && stripped !== query) {
+				needles.add(stripped);
+			}
+			return [...needles];
+		}
+
+		private resolveTarget(node: Node): Element | null {
+			const parent = node.parentElement;
+			if (!parent) return null;
+
+			let target: Element | null = parent.closest(
+				"p, li, h1, h2, h3, h4, h5, h6, blockquote, td, th, dt, dd, pre, figcaption",
+			);
+
+			// 命中的是图片说明文字时，滚动到整张图片
+			if (target && target.tagName === "FIGCAPTION") {
+				target = target.closest("figure") || target.closest("center") || target;
+			}
+
+			return target || parent;
+		}
+
+		private buildGroups() {
+			if (!this.article) return;
+
+			const height = Math.max(this.article.offsetHeight, 1);
+			const bucket = Math.max(
+				this.config.progressBar?.bucketSize ?? 768,
+				1,
+			);
+			const groups = new Map<number, MatchGroup>();
+
+			this.results.forEach((result, index) => {
+				const ratio = Math.min(Math.max(result.top / height, 0), 1);
+				const key = Math.floor(result.top / bucket);
+				if (!groups.has(key)) {
+					groups.set(key, { firstIndex: index, ratio });
+				}
+			});
+
+			this.groups = [...groups.values()].sort(
+				(a, b) => a.ratio - b.ratio,
+			);
+			this.renderGroups();
+		}
+
+		private renderGroups() {
+			const bar = this.bar;
+			const progress = this.config.progressBar;
+
+			if (!bar || !progress || progress.enable === false) {
+				this.hideBar();
+				return;
+			}
+
+			if (!this.groups.length) {
+				this.hideBar();
+				return;
+			}
+
+			bar.innerHTML = "";
+			bar.style.height = progress.length || "60vh";
+			bar.style.width = `${progress.width ?? 4}px`;
+			bar.style.top = progress.top || "50%";
+			bar.style.background =
+				progress.barColor || "rgba(128, 128, 128, 0.35)";
+			bar.style.setProperty(
+				"--post-search-dot-size",
+				`${progress.dotSize ?? 10}px`,
+			);
+			bar.style.setProperty(
+				"--post-search-dot-color",
+				progress.dotColor || "rgba(107, 114, 128, 0.9)",
+			);
+			bar.style.setProperty(
+				"--post-search-active-color",
+				progress.activeDotColor || "var(--primary)",
+			);
+
+			this.groups.forEach((group, groupIndex) => {
+				const button = document.createElement("button");
+				button.type = "button";
+				button.className = "post-search-dot";
+				button.style.top = `${group.ratio * 100}%`;
+				button.setAttribute(
+					"aria-label",
+					this.dotLabel.replace("{index}", String(groupIndex + 1)),
+				);
+
+				const dot = document.createElement("span");
+				button.appendChild(dot);
+				button.addEventListener("click", () => {
+					this.goTo(group.firstIndex);
+				});
+				bar.appendChild(button);
+			});
+
+			this.positionBar();
+			this.updateActiveDot();
+		}
+
+		private positionBar() {
+			const bar = this.bar;
+			const progress = this.config.progressBar;
+			if (!bar || !progress) return;
+
+			if (
+				progress.hideOnMobile !== false &&
+				window.innerWidth < 768
+			) {
+				bar.hidden = true;
+				return;
+			}
+
+			bar.hidden = false;
+
+			const card =
+				document.querySelector<HTMLElement>("#post-container");
+			let right = 12;
+			if (card) {
+				right =
+					window.innerWidth -
+					card.getBoundingClientRect().right +
+					(progress.offset ?? 6);
+			}
+			bar.style.right = `${right}px`;
+		}
+
+		private refreshGeometry() {
+			if (!this.article || !this.results.length) return;
+
+			const articleTop =
+				this.article.getBoundingClientRect().top + window.scrollY;
+			for (const result of this.results) {
+				result.top =
+					result.target.getBoundingClientRect().top +
+					window.scrollY -
+					articleTop;
+			}
+
+			this.buildGroups();
+		}
+
+		private observeArticle(article: HTMLElement) {
+			if (this.resizeObserver) {
+				this.resizeObserver.disconnect();
+			}
+
+			this.resizeObserver = new ResizeObserver(() => {
+				if (!this.results.length) return;
+				window.clearTimeout(this.rebuildTimer);
+				this.rebuildTimer = window.setTimeout(
+					() => this.refreshGeometry(),
+					150,
+				);
+			});
+			this.resizeObserver.observe(article);
+		}
+
+		private goTo(index: number) {
+			if (!this.results.length) return;
+
+			const total = this.results.length;
+			const nextIndex = ((index % total) + total) % total;
+			this.currentIndex = nextIndex;
+
+			const result = this.results[nextIndex];
+			this.clearHighlight();
+
+			if (this.config.highlight !== false) {
+				result.target.classList.add("post-search-hit");
+				this.highlightTimer = window.setTimeout(() => {
+					result.target.classList.remove("post-search-hit");
+				}, 1800);
+			}
+
+			result.target.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+
+			// 图片/iframe 延迟加载会改变上方高度，稍后校准一次居中位置
+			this.userInterrupted = false;
+			this.scheduleCenter(result.target);
+
+			this.updateActiveDot();
+		}
+
+		private scheduleCenter(target: Element) {
+			this.clearSettleTimers();
+
+			for (const delay of [500, 1200, 2400]) {
+				this.settleTimers.push(
+					window.setTimeout(() => {
+						if (
+							this.userInterrupted ||
+							!target.isConnected ||
+							this.results[this.currentIndex]?.target !== target
+						) {
+							return;
+						}
+
+						const rect = target.getBoundingClientRect();
+						const delta =
+							rect.top + rect.height / 2 - window.innerHeight / 2;
+
+						if (Math.abs(delta) > 24) {
+							target.scrollIntoView({
+								behavior: "smooth",
+								block: "center",
+							});
+						}
+					}, delay),
+				);
+			}
+		}
+
+		private clearSettleTimers() {
+			for (const timer of this.settleTimers) {
+				window.clearTimeout(timer);
+			}
+			this.settleTimers = [];
+		}
+
+		private updateActiveDot() {
+			if (!this.bar) return;
+
+			let activeGroup = -1;
+			for (let i = 0; i < this.groups.length; i++) {
+				if (this.groups[i].firstIndex <= this.currentIndex) {
+					activeGroup = i;
+				}
+			}
+
+			const dots =
+				this.bar.querySelectorAll<HTMLElement>(".post-search-dot");
+			dots.forEach((dot, index) => {
+				dot.classList.toggle("is-active", index === activeGroup);
+			});
+		}
+
+		private clearHighlight() {
+			window.clearTimeout(this.highlightTimer);
+			document
+				.querySelectorAll(".post-search-hit")
+				.forEach((element) => {
+					element.classList.remove("post-search-hit");
+				});
+		}
+
+		private showNoResults() {
+			this.results = [];
+			this.groups = [];
+			this.currentIndex = -1;
+			this.hideBar();
+
+			if (this.hint) {
+				this.hint.textContent = this.noResultsText;
+				this.hint.hidden = false;
+			}
+		}
+
+		private hideHint() {
+			if (this.hint) {
+				this.hint.hidden = true;
+			}
+		}
+
+		private hideBar() {
+			const bar = this.bar;
+			if (!bar) return;
+			bar.hidden = true;
+			bar.innerHTML = "";
+		}
+	}
+
+	if (!customElements.get("post-search")) {
+		customElements.define("post-search", PostSearch);
+	}
+</script>

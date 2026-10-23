@@ -35,6 +35,11 @@ export type {
 } from "./navBarConfig";
 export type { Live2DWidgetConfig, SpineModelConfig } from "./pioConfig";
 export type { PlantUMLConfig } from "./plantumlConfig";
+export type {
+	PostSearchConfig,
+	PostSearchProgressBarConfig,
+	PostSearchTriggerMode,
+} from "./postSearchConfig";
 export type { ProfileConfig } from "./profileConfig";
 export type {
 	AdConfig,

@@ -14,23 +14,35 @@ export const galleryConfig: GalleryConfig = {
 		// tags: 相册标签，用于分类和过滤
 		// password: 访问密码，设置后需要输入密码才能查看相册内容（可选）
 		// passwordHint: 密码提示，设置后在输入密码错误时显示（可选，需配合password使用）
+		// pinned: 设为 true 时在首页文章列表上方展示该相册（可选）
+		// pinnedOrder: 首页置顶排序，数字越小越靠前（可选，默认按下方配置顺序）
 		// 每添加一个数组项就相当于添加了一个相册，记得在 public/gallery/ 目录下创建对应的子目录并放入图片
 		{
 			id: "firefly-2026",
-			name: "可爱流萤",
-			description: "飞萤之火自无梦的长夜亮起，绽放在终竟的明天。",
-			location: "崩坏：星穹铁道",
-			date: "2026-01-01",
-			tags: ["崩坏星穹铁道", "流萤"],
+			name: "流萤-测试",
+			description: "相册测试",
+			location: "original",
+			date: "2026-10-20",
+			tags: ["测试"],
 		},
 		{
-			id: "encrypted-test",
-			name: "加密相册示例",
-			description:
-				"这是一个加密相册的示例，设置了访问密码，只有输入正确的密码才能查看相册内容。",
-			location: "崩坏：星穹铁道",
-			date: "2026-02-01",
-			tags: ["加密相册", "示例"],
+			id: "gallery of chun",
+			name: "小春的相册",
+			description: "只要是色色的东西，我统统会没收！",
+			location: "ITE",
+			date: "2026-10-20",
+			tags: ["小春的相册"],
+			pinned: true,
+			password: "123456",
+			passwordHint: "可以去up最新或者次新的视频评论区置顶找到密码哦🧐",
+		},
+		{
+			id: "secretbase gallery of chun",
+			name: "小春的秘密相册",
+			description: "死刑！",
+			location: "ITE",
+			date: "2026-10-20",
+			tags: ["小春的秘密相册"],
 			password: "123456",
 			passwordHint: "示例密码123456",
 		},
@@ -39,4 +51,14 @@ export const galleryConfig: GalleryConfig = {
 	// 瀑布流最小列宽(px)，浏览器根据容器宽度自动计算列数，默认 240
 	// 值越小列数越多，值越大列数越少
 	columnWidth: 240,
+
+	// 首页置顶相册区块配置
+	homeSection: {
+		// 是否在首页展示置顶相册，设为 false 可整体关闭
+		enable: true,
+		// 区块标题，不填则使用 i18n 的「相册」
+		// title: "精选相册",
+		// 最多展示的置顶相册数量，默认 3
+		limit: 3,
+	},
 };

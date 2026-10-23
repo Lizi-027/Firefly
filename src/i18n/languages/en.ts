@@ -515,6 +515,11 @@ export const en: Translation = {
 	[Key.galleryBackToAlbums]: "Back to albums",
 	[Key.galleryEnterAlbum]: "Enter album",
 	[Key.searchAlbums]: "Search albums...",
+	[Key.searchPhotos]: "Search photo names...",
+	[Key.searchInPost]: "Search in this post...",
+	[Key.searchInPostButton]: "Search",
+	[Key.searchInPostNoResults]: "No matching content found",
+	[Key.searchInPostDotLabel]: "Jump to result {index}",
 
 	// Password Protection
 	[Key.passwordProtected]: "Password Protected",

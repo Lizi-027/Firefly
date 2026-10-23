@@ -30,9 +30,8 @@ export const profileConfig: ProfileConfig = {
 		{
 			name: "咸鱼",
 			icon: "ion:fish",
-			url: "https://www.goofish.com/personal?spm=a21ybx.search.nav.1.37db1d0ai2fNBa",
+			url: "https://m.tb.cn/h.jV8j2xY?tk=7GTxTwLufn8 MF937",
 			showName: true,
 		},
-	
 	],
 };

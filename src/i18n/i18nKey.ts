@@ -497,7 +497,12 @@ enum I18nKey {
 	galleryNoAlbums = "galleryNoAlbums",
 	galleryBackToAlbums = "galleryBackToAlbums",
 	galleryEnterAlbum = "galleryEnterAlbum",
+	searchPhotos = "searchPhotos",
 	searchAlbums = "searchAlbums",
+	searchInPost = "searchInPost",
+	searchInPostButton = "searchInPostButton",
+	searchInPostNoResults = "searchInPostNoResults",
+	searchInPostDotLabel = "searchInPostDotLabel",
 
 	// 密码保护
 	passwordProtected = "passwordProtected",

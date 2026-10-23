@@ -512,6 +512,11 @@ export const ja: Translation = {
 	[Key.galleryBackToAlbums]: "アルバム一覧に戻る",
 	[Key.galleryEnterAlbum]: "アルバムを見る",
 	[Key.searchAlbums]: "アルバムを検索...",
+	[Key.searchPhotos]: "画像名を検索...",
+	[Key.searchInPost]: "この記事内を検索...",
+	[Key.searchInPostButton]: "検索",
+	[Key.searchInPostNoResults]: "一致する内容が見つかりません",
+	[Key.searchInPostDotLabel]: "{index} 番目の結果へ移動",
 
 	// パスワード保護
 	[Key.passwordProtected]: "パスワード保護",

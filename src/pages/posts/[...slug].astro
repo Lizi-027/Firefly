@@ -4,6 +4,7 @@ import Comment from "@components/comment/index.astro";
 import Markdown from "@components/common/Markdown.astro";
 import EncryptedPost from "@components/features/EncryptedPost.astro";
 import KatexManager from "@components/features/KatexManager.astro";
+import PostSearch from "@components/features/PostSearch.astro";
 import License from "@components/misc/License.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
@@ -410,6 +411,9 @@ const seriesData = await getSeriesPosts(entry);
         )
       }
 
+      {/* 文章内搜索：非加密文章直接显示 */}
+      {!entry.data.password && <PostSearch />}
+
       {
         showPostCover && !usePostCoverOverlay && processedImage && (
           <div class="mt-4">
@@ -429,6 +433,8 @@ const seriesData = await getSeriesPosts(entry);
 
       {entry.data.password ? (
         <EncryptedPost password={entry.data.password} slug={entry.id} hint={entry.data.passwordHint}>
+          {/* 文章内搜索：放入加密内容，解锁后才出现 */}
+          <PostSearch />
           <Markdown class="mb-6 markdown-content onload-animation">
             <Content />
           </Markdown>
