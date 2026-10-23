@@ -135,12 +135,46 @@ const labels = {
     }
   }
 
-  function showError() {
+  function showError(reason) {
     errorEl.classList.remove('hidden');
+    if (reason) {
+      console.error('[password] 解密失败:', reason);
+    }
   }
 
   function hideError() {
     errorEl.classList.add('hidden');
+  }
+
+  // 移动端输入法可能带出全角数字、不间断空格等，统一规范化后再比对
+  function normalizePassword(value) {
+    var v = (value || '').replace(/[\s\u3000]/g, '');
+    return typeof v.normalize === 'function' ? v.normalize('NFKC') : v;
+  }
+
+  // 部分手机浏览器/隐私模式下访问 storage 会直接抛异常
+  function safeGet(key) {
+    try {
+      return sessionStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function safeSet(key, value) {
+    try {
+      sessionStorage.setItem(key, value);
+    } catch (e) {
+      // 忽略存储失败，不能影响解密后的内容展示
+    }
+  }
+
+  function safeRemove(key) {
+    try {
+      sessionStorage.removeItem(key);
+    } catch (e) {
+      // 忽略
+    }
   }
 
   function base64ToBytes(b64) {
@@ -181,24 +215,25 @@ const labels = {
   // Handle form submit
   form.addEventListener('submit', function(e) {
     e.preventDefault();
-    var pwd = input.value.trim();
+    var pwd = normalizePassword(input.value);
     if (!pwd) return;
     hideError();
+    // 只把解密失败当作密码错误；后续展示阶段的异常不应被误判
     decrypt(pwd).then(function(html) {
-      sessionStorage.setItem(cacheKey, pwd);
+      safeSet(cacheKey, pwd);
       showContent(html);
-    }).catch(function() {
-      showError();
+    }, function(err) {
+      showError(err && (err.name + ': ' + err.message));
     });
   });
 
   // Try cached password
-  var cached = sessionStorage.getItem(cacheKey);
+  var cached = safeGet(cacheKey);
   if (cached) {
     decrypt(cached).then(function(html) {
       showContent(html);
-    }).catch(function() {
-      sessionStorage.removeItem(cacheKey);
+    }, function() {
+      safeRemove(cacheKey);
     });
   }
 })();
